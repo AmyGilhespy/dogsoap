@@ -77,8 +77,8 @@ mod tests {
 
 		// Planner
 		let mut planner = Planner::new();
-		planner.add_action(get_axe);
-		planner.add_action(chop_wood);
+		planner.push_action(get_axe);
+		planner.push_action(chop_wood);
 
 		// Plan!
 		let plan = planner.plan(&start, &goal).expect("no plan found");

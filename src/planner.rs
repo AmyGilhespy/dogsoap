@@ -22,7 +22,7 @@ impl Planner {
 		}
 	}
 
-	pub fn add_action(&mut self, action: Action) {
+	pub fn push_action(&mut self, action: Action) {
 		self.actions.push(action);
 	}
 

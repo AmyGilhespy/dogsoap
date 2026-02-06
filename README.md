@@ -34,8 +34,8 @@ goal.push_condition(Condition::Eq(has_wood, Value::TRUE));
 
 // Planner
 let mut planner = Planner::new();
-planner.add_action(get_axe);
-planner.add_action(chop_wood);
+planner.push_action(get_axe);
+planner.push_action(chop_wood);
 
 // Plan!
 let plan = planner.plan(&start, &goal).expect("no plan found");
@@ -108,7 +108,7 @@ let json = r#"
 }
 "#;
 
-let deer: NpcTemplate = serde_json::from_str(json)?;
+let template: NpcTemplate = serde_json::from_str(json)?;
 
 let mut facts = FactMap::new();
 for fact_name in template.facts {
@@ -139,9 +139,9 @@ for g in &template.goals {
 		}
 	}
 	goals.push(goal);
-	let mut actions = Vec::new();
+	let mut planner = Planner::new();
 	for a in &template.actions {
-		let mut action = Action::new(a.name, Cost(a.cost));
+		let mut action = Action::new(&a.name, Cost(a.cost));
 		for precondition in &a.preconditions {
 			match facts.parse_condition(precondition) {
 				Ok(cond) => {
@@ -166,8 +166,18 @@ for g in &template.goals {
 				}
 			}
 		}
-		actions.push(action);
+		planner.push_action(action);
 	}
+
+	let deer = Npc {
+		world_state,
+		planner: ,
+		facts,
+		goals,
+	};
+
+	// Then, later:
+	let plan = deer.planner.plan(&deer.world_state, &deer.goal[0]).expect("no plan found");
 }
 ```
 
