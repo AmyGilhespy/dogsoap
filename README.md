@@ -48,12 +48,135 @@ for index in &plan.actions {
 }
 ```
 
+You can use a FactMap to simplify the parsing of a data file (JSON, ron, etc):
+
+```rust
+let json = r#"
+{
+	"name_en": "Deer",
+	"desc_en": "A common prey animal.",
+	"facts": [
+		"satiety", // satiety := fullness; opposite of hunger
+		"can_see_threat",
+		"is_threatened",
+		"has_escape_route",
+		"energy_level",
+		"wakefulness"
+	],
+	"initial_state": { // Anything not listed defaults to 0
+		"satiety": 50,
+		"energy_level": 25,
+		"wakefulness": 75
+	},
+	"goals": [
+		["Avoid Danger", ["is_threatened == 0"]],
+		["Eat",          ["satiety >= 75"]],
+		["Sleep",        ["wakefulness >= 75"]]
+	],
+	"actions": [
+		{
+				"name": "Wander Aimlessly",
+				"cost": 1,
+				"preconditions": ["is_threatened == 0"],
+				"effects": []
+		},
+		{
+				"name": "Search for Escape Route",
+				"cost": 2,
+				"preconditions": [],
+				"effects": ["has_escape_route = 1"]
+		},
+		{
+				"name": "Graze",
+				"cost": 3,
+				"preconditions": ["is_threatened == 0", "can_see_threat == 0"],
+				"effects": ["energy_level += 1", "satiety += 3"]
+		},
+		{
+				"name": "Sleep",
+				"cost": 10,
+				"preconditions": ["is_threatened == 0", "can_see_threat == 0"],
+				"effects": ["energy_level += 1", "wakefulness += 3"]
+		},
+		{
+				"name": "Flee",
+				"cost": 15,
+				"preconditions": ["has_escape_route == 1"],
+				"effects": ["is_threatened = 0", "can_see_threat = 0"]
+		}
+	]
+}
+"#;
+
+let deer: NpcTemplate = serde_json::from_str(json)?;
+
+let mut facts = FactMap::new();
+for fact_name in template.facts {
+	if let Err(err) = facts.new_fact(&fact_name) {
+		error!("Failed to create new fact \"{fact_name}\": {err}");
+	}
+}
+let mut world_state = WorldState::default();
+for kv in template.initial_state {
+	let Some(fact_id) = facts.get_fact_id(&kv.0) else {
+		error!("Reference to undefined fact id \"{}\".", kv.0);
+		continue;
+	};
+	world_state = world_state.with_fact(fact_id, Value::Int(kv.1));
+}
+let mut goals = Vec::new();
+for g in &template.goals {
+	let mut goal = Goal::new(&g.0);
+	for condition in &g.1 {
+		match facts.parse_condition(condition) {
+			Ok(cond) => {
+				goal.push_condition(cond);
+			}
+			Err(err) => {
+				error!("Failed to parse NPC goal condition: \"{condition}\": {err}");
+				continue;
+			}
+		}
+	}
+	goals.push(goal);
+	let mut actions = Vec::new();
+	for a in &template.actions {
+		let mut action = Action::new(a.name, Cost(a.cost));
+		for precondition in &a.preconditions {
+			match facts.parse_condition(precondition) {
+				Ok(cond) => {
+					action.push_precondition(cond);
+				}
+				Err(err) => {
+					error!(
+						"Failed to parse NPC action precondition: \"{precondition}\": {err}"
+					);
+					continue;
+				}
+			}
+		}
+		for effect in &a.effects {
+			match facts.parse_effect(effect) {
+				Ok(ef) => {
+					action.push_effect(ef);
+				}
+				Err(err) => {
+					error!("Failed to parse NPC action effect: \"{effect}\": {err}");
+					continue;
+				}
+			}
+		}
+		actions.push(action);
+	}
+}
+```
+
 # License
 
 Dog Soap is free, open source and permissively licensed! Except where noted (below and/or in individual files), all code in this repository is dual-licensed under either:
 
-    MIT License (LICENSE-MIT or http://opensource.org/licenses/MIT)
-    Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
+    	MIT License (LICENSE-MIT or http://opensource.org/licenses/MIT)
+    	Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
 
 at your option. This means you can select the license you prefer! This dual-licensing approach is the de-facto standard in the Rust ecosystem and there are very good reasons to include both.
 
