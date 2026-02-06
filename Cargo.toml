@@ -1,6 +1,6 @@
 [package]
 name = "dogsoap"
-version = "0.1.1-alpha.1"
+version = "0.2.0-alpha.1"
 edition = "2024"
 description = "Data-Oriented, Simple, Goal-Oriented Action Planning"
 license = "MIT OR Apache-2.0"

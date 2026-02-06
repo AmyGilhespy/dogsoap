@@ -3,6 +3,7 @@ use pathfinding::prelude::astar;
 use crate::action::Action;
 use crate::condition::conditions_met;
 use crate::cost::Cost;
+use crate::errors::PlannerError;
 use crate::goal::Goal;
 use crate::plan::Plan;
 use crate::world::WorldState;
@@ -24,10 +25,10 @@ impl Planner {
 		self.actions.push(action);
 	}
 
-	/// # Panics
-	/// If the Planner produces an unreachable state.
-	#[must_use]
-	pub fn plan(&self, start: &WorldState, goal: &Goal) -> Option<Plan> {
+	/// # Errors
+	/// - `PlannerError.NoPlanFound`: If no plan is found
+	/// - `PlannerError.UnreachableState`: If the planner produced an unreachable state between steps
+	pub fn plan(&self, start: &WorldState, goal: &Goal) -> Result<Plan, PlannerError> {
 		// run A* / Dijkstra
 		let result = astar(
 			start,
@@ -36,36 +37,34 @@ impl Planner {
 			|state| conditions_met(&goal.conditions, state),
 		);
 
-		result.map(|(path, cost)| {
-			let mut action_indices = Vec::new();
+		let (path, cost) = result.ok_or(PlannerError::NoPlanFound)?;
 
-			// path is a Vec<WorldState>
-			// we need to reconstruct which action led to each state
-			for window in path.windows(2) {
-				let from = &window[0];
-				let to = &window[1];
+		let mut action_indices = Vec::new();
 
-				let action_index = self
-					.actions
-					.iter()
-					.enumerate()
-					.find_map(|(i, action)| {
-						if conditions_met(&action.preconditions, from) {
-							let next = from.with_effects(&action.effects);
-							if &next == to { Some(i) } else { None }
-						} else {
-							None
-						}
-					})
-					.expect("planner produced an unreachable state");
+		for window in path.windows(2) {
+			let from = &window[0];
+			let to = &window[1];
 
-				action_indices.push(action_index);
-			}
+			let action_index = self
+				.actions
+				.iter()
+				.enumerate()
+				.find_map(|(i, action)| {
+					if conditions_met(&action.preconditions, from) {
+						let next = from.with_effects(&action.effects);
+						if &next == to { Some(i) } else { None }
+					} else {
+						None
+					}
+				})
+				.ok_or(PlannerError::UnreachableState)?;
 
-			Plan {
-				actions: action_indices,
-				total_cost: cost,
-			}
+			action_indices.push(action_index);
+		}
+
+		Ok(Plan {
+			actions: action_indices,
+			total_cost: cost,
 		})
 	}
 

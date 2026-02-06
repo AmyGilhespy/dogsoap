@@ -16,8 +16,6 @@ impl WorldState {
 		}
 	}
 
-	/// # Panics
-	/// If the underlying vector could not be resized.
 	#[must_use]
 	pub fn with_fact(&self, fact: FactId, value: Value) -> Self {
 		let mut next = self.clone();
@@ -26,7 +24,6 @@ impl WorldState {
 		if fact >= next.values.len() {
 			next.values.resize(fact + 1, Value::default());
 		}
-		assert!(fact < next.values.len());
 
 		next.values[fact] = value;
 
