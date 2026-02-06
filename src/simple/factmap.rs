@@ -1,9 +1,9 @@
 use hashbrown::HashMap;
 
-use crate::Condition;
-use crate::errors::{NewFactError, ParseConditionError};
+use crate::errors::{NewFactError, ParseConditionError, ParseEffectError};
 use crate::fact::FactId;
 use crate::value::Value;
+use crate::{Condition, Effect};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -121,6 +121,39 @@ impl FactMap {
 			">=" => Ok(Condition::Ge(lhs, rhs)),
 			"<=" => Ok(Condition::Le(lhs, rhs)),
 			_ => Err(ParseConditionError::UnrecognizedOperator),
+		}
+	}
+
+	/// Parse an effect string such as:
+	/// `"my_fact = 3"` => `Effect::Set(my_fact, Value::Int(3))`
+	/// `"my_fact += my_other_fact"` => `Effect::Add(my_fact, Value::Ref(my_other_fact))`
+	///
+	/// # Errors
+	/// - `ParseEffectError::WrongFieldCount` if the string does not split into exactly `3` fields (ascii spacing as separators)
+	/// - `ParseEffectError::LhsNotAFactId` if the lhs is not a fact id
+	/// - `ParseEffectError::RhsNotAFactNameOrId` if parsing the rhs with `parse_value` returns `Value::Error` (it wasn't an `i64` or fact id)
+	/// - `ParseEffectError::UnrecognizedOperator` if the middle field is not one of `"="`, `"+="`, or `"-="`
+	pub fn parse_effect(&self, string: impl Into<String>) -> Result<Effect, ParseEffectError> {
+		let string = string.into();
+		let fields = string
+			.as_str()
+			.split_ascii_whitespace()
+			.collect::<Vec<&str>>();
+		if fields.len() != 3 {
+			return Err(ParseEffectError::WrongFieldCount);
+		}
+		let Some(lhs) = self.get_fact_id(fields[0]) else {
+			return Err(ParseEffectError::LhsNotAFactId);
+		};
+		let rhs = self.parse_value(fields[2]);
+		if rhs.is_error() {
+			return Err(ParseEffectError::RhsNotAFactNameOrId);
+		}
+		match fields[1] {
+			"=" => Ok(Effect::Set(lhs, rhs)),
+			"+=" => Ok(Effect::Add(lhs, rhs)),
+			"-=" => Ok(Effect::Sub(lhs, rhs)),
+			_ => Err(ParseEffectError::UnrecognizedOperator),
 		}
 	}
 }

@@ -125,6 +125,21 @@ impl Value {
 	pub fn add_assign(&mut self, other: &Self, state: &WorldState) {
 		*self = self.add(other, state);
 	}
+
+	#[must_use]
+	pub fn sub(&self, other: &Self, state: &WorldState) -> Value {
+		if let Value::Int(lhs) = self.resolve_fully(state)
+			&& let Value::Int(rhs) = other.resolve_fully(state)
+		{
+			Value::Int(lhs - rhs)
+		} else {
+			Value::Error
+		}
+	}
+
+	pub fn sub_assign(&mut self, other: &Self, state: &WorldState) {
+		*self = self.sub(other, state);
+	}
 }
 
 impl Default for Value {

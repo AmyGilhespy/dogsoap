@@ -41,3 +41,18 @@ pub enum ParseConditionError {
 	#[error("lhs is not a fact name or id")]
 	RhsNotAFactNameOrId,
 }
+
+#[derive(Debug, Error)]
+pub enum ParseEffectError {
+	#[error("wrong field count")]
+	WrongFieldCount,
+
+	#[error("unrecognized operator")]
+	UnrecognizedOperator,
+
+	#[error("lhs is not a fact id")]
+	LhsNotAFactId,
+
+	#[error("lhs is not a fact name or id")]
+	RhsNotAFactNameOrId,
+}

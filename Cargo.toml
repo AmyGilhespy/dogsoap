@@ -1,10 +1,12 @@
 [package]
 name = "dogsoap"
-version = "0.7.1-alpha.2"
+version = "0.8.0-alpha.1"
 edition = "2024"
 description = "Data-Oriented, Simple, Goal-Oriented Action Planning"
 license = "MIT OR Apache-2.0"
 authors = ["Amy Gilhespy <amyogilhespy@gmail.com>"]
+categories = ["games", "game-development"]
+keywords = ["goap", "dogoap", "ai", "bevy"]
 repository = "https://github.com/AmyGilhespy/dogsoap"
 
 [dependencies]
