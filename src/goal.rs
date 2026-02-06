@@ -21,6 +21,14 @@ impl Goal {
 	}
 }
 
+impl PartialEq for Goal {
+	fn eq(&self, other: &Self) -> bool {
+		self.name == other.name
+	}
+}
+
+impl Eq for Goal {}
+
 impl core::fmt::Display for Goal {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> core::fmt::Result {
 		write!(f, "{}", self.name)

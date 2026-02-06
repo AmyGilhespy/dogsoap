@@ -188,7 +188,7 @@ let deer = Npc {
 };
 
 // Then, later:
-let plan = deer.planner.plan(&deer.world_state, &deer.goal[0]).expect("no plan found");
+let plan = deer.planner.plan(&deer.world_state, &deer.goals[0]).expect("no plan found");
 ```
 
 # License
