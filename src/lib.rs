@@ -78,6 +78,13 @@ mod tests {
 		// Plan!
 		let plan = planner.plan(&start, &goal).expect("no plan found");
 
+		// Test typical usage:
+		for index in &plan.actions {
+			if let Some(action) = planner.get_plan_action(&plan, *index) {
+				println!("{}", action.name);
+			}
+		}
+
 		// Verify plan
 		assert_eq!(plan.actions.len(), 2);
 		assert_eq!(
