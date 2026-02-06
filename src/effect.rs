@@ -13,7 +13,8 @@ impl Effect {
 	pub fn apply(&self, state: &mut WorldState) {
 		match *self {
 			Effect::Add(fact, delta) => {
-				state.values[usize::from(fact.0)] += delta;
+				let index = usize::from(fact.0);
+				state.values[index] = state.values[index].add(&delta, state);
 			}
 			Effect::Set(fact, value) => {
 				state.values[usize::from(fact.0)] = value;

@@ -17,12 +17,12 @@ impl Condition {
 	#[must_use]
 	pub fn is_satisfied(&self, state: &WorldState) -> bool {
 		match *self {
-			Condition::Eq(fact, value) => state.get(fact) == value,
-			Condition::Ne(fact, value) => state.get(fact) != value,
-			Condition::Gt(fact, value) => state.get(fact) > value,
-			Condition::Lt(fact, value) => state.get(fact) < value,
-			Condition::Ge(fact, value) => state.get(fact) >= value,
-			Condition::Le(fact, value) => state.get(fact) <= value,
+			Condition::Eq(fact, value) => state.get(fact).eq(&value, state),
+			Condition::Ne(fact, value) => state.get(fact).ne(&value, state),
+			Condition::Gt(fact, value) => state.get(fact).gt(&value, state),
+			Condition::Lt(fact, value) => state.get(fact).lt(&value, state),
+			Condition::Ge(fact, value) => state.get(fact).ge(&value, state),
+			Condition::Le(fact, value) => state.get(fact).le(&value, state),
 		}
 	}
 }

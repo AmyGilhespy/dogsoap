@@ -32,13 +32,13 @@ mod tests {
 	fn condition_and_effects_work() {
 		let health = FactId(0);
 
-		let start = WorldState::new(0).with_fact(health, Value(10));
+		let start = WorldState::new(0).with_fact(health, Value::Int(10));
 
-		let healed = start.with_effects(&[Effect::Add(health, Value(5))]);
+		let healed = start.with_effects(&[Effect::Add(health, Value::Int(5))]);
 
-		assert_eq!(healed.get(health), Value(15));
+		assert!(healed.get(health).eq(&Value::Int(15), &start));
 
-		assert!(Condition::Gt(health, Value(10)).is_satisfied(&healed));
+		assert!(Condition::Gt(health, Value::Int(10)).is_satisfied(&healed));
 	}
 
 	#[test]

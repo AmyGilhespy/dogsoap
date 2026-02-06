@@ -2,10 +2,36 @@ use crate::effect::Effect;
 use crate::fact::FactId;
 use crate::value::Value;
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)] // Eq, Hash are required by astar
+/// Regarding `Eq`, `PartialEq`, and `Hash`:
+/// `Value::Error` is considered equal to `Value::Error` here so that comparing hashes produces the same result as comparing values.
+#[derive(Clone, Debug)] // Eq, Hash are required by astar
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct WorldState {
 	pub(crate) values: Vec<Value>, // indexed by FactId
+}
+
+impl PartialEq for WorldState {
+	fn eq(&self, other: &Self) -> bool {
+		if self.values.len() != other.values.len() {
+			return false;
+		}
+		self.values
+			.iter()
+			.zip(&other.values)
+			.all(|p| p.0.eq_even_error(p.1, self))
+	}
+}
+
+impl Eq for WorldState {}
+
+impl core::hash::Hash for WorldState {
+	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+		self.values
+			.iter()
+			.map(|v| v.resolve_fully(self))
+			.collect::<Vec<Value>>()
+			.hash(state);
+	}
 }
 
 impl WorldState {
