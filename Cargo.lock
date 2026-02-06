@@ -535,7 +535,7 @@ checksum = "c9c272297e804878a2a4b707cfcfc6d2328b5bb936944613b4fdf2b9269afdfd"
 
 [[package]]
 name = "dogsoap"
-version = "0.11.0-alpha.1"
+version = "0.11.0-alpha.2"
 dependencies = [
  "bevy",
  "hashbrown",

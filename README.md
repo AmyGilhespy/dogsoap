@@ -109,14 +109,18 @@ let json = r#"
 }
 "#;
 
+// Read the data
 let template: NpcTemplate = serde_json::from_str(json)?;
 
+// Facts
 let mut facts = FactMap::new();
 for fact_name in template.facts {
 	if let Err(err) = facts.new_fact(&fact_name) {
 		error!("Failed to create new fact \"{fact_name}\": {err}");
 	}
 }
+
+// Initial World State
 let mut world_state = WorldState::default();
 for kv in template.initial_state {
 	let Some(fact_id) = facts.get_fact_id(&kv.0) else {
@@ -125,6 +129,8 @@ for kv in template.initial_state {
 	};
 	world_state = world_state.with_fact(fact_id, Value::Int(kv.1));
 }
+
+// Goals
 let mut goals = Vec::new();
 for g in &template.goals {
 	let mut goal = Goal::new(&g.0);
@@ -140,46 +146,49 @@ for g in &template.goals {
 		}
 	}
 	goals.push(goal);
-	let mut planner = Planner::new();
-	for a in &template.actions {
-		let mut action = Action::new(&a.name, Cost(a.cost));
-		for precondition in &a.preconditions {
-			match facts.parse_condition(precondition) {
-				Ok(cond) => {
-					action.push_precondition(cond);
-				}
-				Err(err) => {
-					error!(
-						"Failed to parse NPC action precondition: \"{precondition}\": {err}"
-					);
-					continue;
-				}
-			}
-		}
-		for effect in &a.effects {
-			match facts.parse_effect(effect) {
-				Ok(ef) => {
-					action.push_effect(ef);
-				}
-				Err(err) => {
-					error!("Failed to parse NPC action effect: \"{effect}\": {err}");
-					continue;
-				}
-			}
-		}
-		planner.push_action(action);
-	}
-
-	let deer = Npc {
-		world_state,
-		planner: ,
-		facts,
-		goals,
-	};
-
-	// Then, later:
-	let plan = deer.planner.plan(&deer.world_state, &deer.goal[0]).expect("no plan found");
 }
+
+// Planner (Actions & Events)
+let mut planner = Planner::new();
+for a in &template.actions {
+	let mut action = Action::new(&a.name, Cost(a.cost));
+	for precondition in &a.preconditions {
+		match facts.parse_condition(precondition) {
+			Ok(cond) => {
+				action.push_precondition(cond);
+			}
+			Err(err) => {
+				error!(
+					"Failed to parse NPC action precondition: \"{precondition}\": {err}"
+				);
+				continue;
+			}
+		}
+	}
+	for effect in &a.effects {
+		match facts.parse_effect(effect) {
+			Ok(ef) => {
+				action.push_effect(ef);
+			}
+			Err(err) => {
+				error!("Failed to parse NPC action effect: \"{effect}\": {err}");
+				continue;
+			}
+		}
+	}
+	planner.push_action(action);
+}
+
+// Construct your NPC
+let deer = Npc {
+	world_state,
+	planner: ,
+	facts,
+	goals,
+};
+
+// Then, later:
+let plan = deer.planner.plan(&deer.world_state, &deer.goal[0]).expect("no plan found");
 ```
 
 # License
