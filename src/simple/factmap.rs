@@ -13,6 +13,14 @@ pub struct FactMap {
 }
 
 impl FactMap {
+	#[must_use]
+	pub fn new() -> Self {
+		FactMap {
+			lut: Vec::new(),
+			map: HashMap::new(),
+		}
+	}
+
 	/// # Errors
 	/// - `NewFactError::EmptyFactName`: if the provided fact name was empty
 	/// - `NewFactError::InitialDigitFactName`: if the provided fact name begins with a digit
@@ -113,5 +121,11 @@ impl FactMap {
 			"<=" => Ok(Condition::Le(lhs, rhs)),
 			_ => Err(ParseConditionError::UnrecognizedOperator),
 		}
+	}
+}
+
+impl Default for FactMap {
+	fn default() -> Self {
+		Self::new()
 	}
 }
