@@ -72,10 +72,8 @@ mod tests {
 		};
 
 		// Goal
-		let goal = Goal {
-			name: "Get wood".into(),
-			conditions: vec![Condition::Eq(has_wood, Value::TRUE)],
-		};
+		let mut goal = Goal::new("Get wood");
+		goal.push_condition(Condition::Eq(has_wood, Value::TRUE));
 
 		// Planner
 		let mut planner = Planner::new();
