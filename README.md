@@ -29,9 +29,8 @@ let chop_wood = Action {
 };
 
 // Goal
-let goal = Goal {
-	conditions: vec![Condition::Eq(has_wood, Value::TRUE)],
-};
+let mut goal = Goal::new("Get wood");
+goal.push_condition(Condition::Eq(has_wood, Value::TRUE));
 
 // Planner
 let mut planner = Planner::new();
