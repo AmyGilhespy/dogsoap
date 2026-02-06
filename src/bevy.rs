@@ -1,3 +1,5 @@
+use bevy::prelude::Component;
+
 use crate::plan::Plan;
 use crate::world::WorldState;
 
