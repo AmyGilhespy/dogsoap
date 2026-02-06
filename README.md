@@ -51,7 +51,7 @@ for index in &plan.actions {
 
 # License
 
-Bevy Flair HTML Extension is free, open source and permissively licensed! Except where noted (below and/or in individual files), all code in this repository is dual-licensed under either:
+Dog Soap is free, open source and permissively licensed! Except where noted (below and/or in individual files), all code in this repository is dual-licensed under either:
 
     MIT License (LICENSE-MIT or http://opensource.org/licenses/MIT)
     Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
