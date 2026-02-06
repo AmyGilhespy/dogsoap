@@ -8,6 +8,7 @@ use crate::goal::Goal;
 use crate::plan::Plan;
 use crate::world::WorldState;
 
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Planner {
 	actions: Vec<Action>,
