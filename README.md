@@ -178,6 +178,9 @@ for a in &template.actions {
 			}
 		}
 	}
+	for executor in &a.executors {
+		action.push_executor(&executor.0, &executor.1);
+	}
 	planner.push_action(action);
 }
 
