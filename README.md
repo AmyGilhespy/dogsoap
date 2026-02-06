@@ -5,13 +5,14 @@ Dog Soap (Data Oriented, Simple, Goal-Oriented Action Planning) is a dirt-simple
 # Code Example
 
 ```rust
+// Facts (...but consider using a FactMap!)
 let has_axe = FactId(0);
 let has_wood = FactId(1);
 
 // Initial world state
-let start = WorldState::new(0)
-	.with_fact(has_axe, Value::FALSE)
-	.with_fact(has_wood, Value::FALSE);
+let mut start = WorldState::new(0);
+start.push_fact(has_axe, Value::FALSE);
+start.push_fact(has_wood, Value::FALSE);
 
 // Actions
 let get_axe = Action {

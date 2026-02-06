@@ -42,28 +42,33 @@ impl WorldState {
 		}
 	}
 
+	pub fn push_fact(&mut self, fact: FactId, value: Value) -> &mut Self {
+		let fact = usize::from(fact.0);
+		if fact >= self.values.len() {
+			self.values.resize(fact + 1, Value::default());
+		}
+		self.values[fact] = value;
+		self
+	}
+
+	pub fn apply_effects(&mut self, effects: &[Effect]) -> &mut Self {
+		for effect in effects {
+			effect.apply(self);
+		}
+		self
+	}
+
 	#[must_use]
 	pub fn with_fact(&self, fact: FactId, value: Value) -> Self {
 		let mut next = self.clone();
-		let fact = usize::from(fact.0);
-
-		if fact >= next.values.len() {
-			next.values.resize(fact + 1, Value::default());
-		}
-
-		next.values[fact] = value;
-
+		let _ = next.push_fact(fact, value);
 		next
 	}
 
 	#[must_use]
 	pub fn with_effects(&self, effects: &[Effect]) -> Self {
 		let mut next = self.clone();
-
-		for effect in effects {
-			effect.apply(&mut next);
-		}
-
+		let _ = next.apply_effects(effects);
 		next
 	}
 
