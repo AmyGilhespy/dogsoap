@@ -73,6 +73,7 @@ mod tests {
 
 		// Goal
 		let goal = Goal {
+			name: "Get wood".into(),
 			conditions: vec![Condition::Eq(has_wood, Value::TRUE)],
 		};
 
