@@ -9,6 +9,8 @@ mod fact;
 mod goal;
 mod plan;
 mod planner;
+#[cfg(feature = "simple")]
+mod simple;
 mod value;
 mod world;
 
@@ -21,6 +23,8 @@ pub use fact::FactId;
 pub use goal::Goal;
 pub use plan::Plan;
 pub use planner::Planner;
+#[cfg(feature = "simple")]
+pub use simple::*;
 pub use value::Value;
 pub use world::WorldState;
 
