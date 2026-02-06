@@ -20,6 +20,7 @@ let get_axe = Action {
 	cost: Cost(1),
 	preconditions: vec![],
 	effects: vec![Effect::Set(has_axe, Value::TRUE)],
+	executors: vec![],
 };
 
 let chop_wood = Action {
@@ -27,6 +28,7 @@ let chop_wood = Action {
 	cost: Cost(2),
 	preconditions: vec![Condition::Eq(has_axe, Value::TRUE)],
 	effects: vec![Effect::Set(has_wood, Value::TRUE)],
+	executors: vec![],
 };
 
 // Goal
