@@ -43,11 +43,31 @@ pull:
 ci:
     clear
     cargo check
+    cargo check --no-default-features
+    cargo check --features=bevy
+    cargo check --features=serde
+    cargo check --all-features
     cargo fmt --check
     cargo clippy -- -D warnings
     cargo clippy -- -D warnings -W clippy::pedantic
+    cargo clippy --no-default-features -- -D warnings
+    cargo clippy --no-default-features -- -D warnings -W clippy::pedantic
+    cargo clippy --features=bevy -- -D warnings
+    cargo clippy --features=bevy -- -D warnings -W clippy::pedantic
+    cargo clippy --features=serde -- -D warnings
+    cargo clippy --features=serde -- -D warnings -W clippy::pedantic
+    cargo clippy --all-features -- -D warnings
+    cargo clippy --all-features -- -D warnings -W clippy::pedantic
     cargo test
+    cargo test --no-default-features
+    cargo test --features=bevy
+    cargo test --features=serde
+    cargo test --all-features
     cargo build
+    cargo build --no-default-features
+    cargo build --features=bevy
+    cargo build --features=serde
+    cargo build --all-features
 
 publish-dry-run: ci
     cargo publish -p dogsoap --dry-run

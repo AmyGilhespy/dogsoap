@@ -1,5 +1,6 @@
 use thiserror::Error;
 
+#[allow(dead_code)]
 #[derive(Debug, Error)]
 pub enum PlannerError {
 	#[error("no plan could be found")]
@@ -9,6 +10,7 @@ pub enum PlannerError {
 	UnreachableState,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Error)]
 pub enum NewFactError {
 	#[error("the provided fact name is an empty string, which is disallowed")]
@@ -27,6 +29,7 @@ pub enum NewFactError {
 	OutOfFactIdSpace,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Error)]
 pub enum ParseConditionError {
 	#[error("wrong field count")]
@@ -42,6 +45,7 @@ pub enum ParseConditionError {
 	RhsNotAFactNameOrId,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Error)]
 pub enum ParseEffectError {
 	#[error("wrong field count")]
