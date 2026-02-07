@@ -83,12 +83,12 @@ let json = r#"
 				"preconditions": ["is_threatened == 0"],
 				"effects": []
 				executors: [
-            {"locate_passable", "4:8"}, // Locate any tile that is passable within a range of 4..8 tiles away.
-            {"approach", "3"}, // Approach located tile using pathfinding until distance away is within 3 tiles.
-            {"wait", "1"}, // Wait 1 turn (loiter).
-            {"approach", "0"}, // Approach located tile using pathfinding until distance away is within 0 tiles.
-            {"wait", "1"} // Wait 1 turn (loiter).
-        ],
+						{"locate_passable", "4:8"}, // Locate any tile that is passable within a range of 4..8 tiles away.
+						{"approach", "3"}, // Approach located tile using pathfinding until distance away is within 3 tiles.
+						{"wait", "1"}, // Wait 1 turn (loiter).
+						{"approach", "0"}, // Approach located tile using pathfinding until distance away is within 0 tiles.
+						{"wait", "1"} // Wait 1 turn (loiter).
+				],
 		},
 		{
 				"name": "Search for Escape Route",
@@ -96,10 +96,10 @@ let json = r#"
 				"preconditions": [],
 				"effects": ["has_escape_route = 1"]
 				executors: [
-            {"locate_passable", "12:16"}, // Locate any tile that is passable within a range of 12..16 tiles away.
-            {"tag_located", "escape"}, // Tag the located tile "escape"
-            {"set_fact", "has_escape_route = 1"} // Set "has_escape_route" to Value::Int(1) to flag that we found an escape route.
-        ],
+						{"locate_passable", "12:16"}, // Locate any tile that is passable within a range of 12..16 tiles away.
+						{"tag_located", "escape"}, // Tag the located tile "escape"
+						{"set_fact", "has_escape_route = 1"} // Set "has_escape_route" to Value::Int(1) to flag that we found an escape route.
+				],
 		},
 		{
 				"name": "Graze",
@@ -107,13 +107,13 @@ let json = r#"
 				"preconditions": ["is_threatened == 0", "can_see_threat == 0"],
 				"effects": ["energy_level += 1", "satiety += 3"]
 				executors: [
-            {"locate", "tall_grass"}, // Locate tile "tall_grass" and remember the location.
-            {"approach", "0"}, // Approach located tile using pathfinding until distance away is within 0 tiles.
-            {"wait", "3"}, // Wait 3 turns (eating takes time!).
-            {"set_tile", "grass_seed"}, // Set the tile under us to "grass_seed", which turns back into "tall_grass" after a bit.
-            {"set_stat", "energy_level += 1"}, // Recover energy.
-            {"set_stat", "satiety += 3"} // Fill belly.
-        ],
+						{"locate", "tall_grass"}, // Locate tile "tall_grass" and remember the location.
+						{"approach", "0"}, // Approach located tile using pathfinding until distance away is within 0 tiles.
+						{"wait", "3"}, // Wait 3 turns (eating takes time!).
+						{"set_tile", "grass_seed"}, // Set the tile under us to "grass_seed", which turns back into "tall_grass" after a bit.
+						{"set_stat", "energy_level += 1"}, // Recover energy.
+						{"set_stat", "satiety += 3"} // Fill belly.
+				],
 		},
 		{
 				"name": "Sleep",
@@ -121,10 +121,10 @@ let json = r#"
 				"preconditions": ["is_threatened == 0", "can_see_threat == 0"],
 				"effects": ["energy_level += 1", "wakefulness += 3"]
 				executors: [
-            {"wait", "3"}, // Wait 3 turns (sleeping takes time!).
-            {"set_stat", "energy_level += 1"}, // Recover energy.
-            {"set_stat", "wakefulness += 3"} // Become wakeful.
-        ],
+						{"wait", "3"}, // Wait 3 turns (sleeping takes time!).
+						{"set_stat", "energy_level += 1"}, // Recover energy.
+						{"set_stat", "wakefulness += 3"} // Become wakeful.
+				],
 		},
 		{
 				"name": "Flee",
@@ -132,11 +132,11 @@ let json = r#"
 				"preconditions": ["has_escape_route == 1"],
 				"effects": ["is_threatened = 0", "can_see_threat = 0"]
 				executors: [
-            {"recall_located", "escape"}, // Recall the tile position previously tagged "escape"
-            {"approach", "0"}, // Approach located tile using pathfinding until distance away is within 0 tiles.
-            {"set_fact", "is_threatened = 0"}, // Set "is_threatened" to Value::Int(0) to flag that we are no longer threatened.
-            {"set_fact", "can_see_threat = 0"} // Set "can_see_threat" to Value::Int(0) to flag that we no longer see a threat.
-        ],
+						{"recall_located", "escape"}, // Recall the tile position previously tagged "escape"
+						{"approach", "0"}, // Approach located tile using pathfinding until distance away is within 0 tiles.
+						{"set_fact", "is_threatened = 0"}, // Set "is_threatened" to Value::Int(0) to flag that we are no longer threatened.
+						{"set_fact", "can_see_threat = 0"} // Set "can_see_threat" to Value::Int(0) to flag that we no longer see a threat.
+				],
 		}
 	]
 }
@@ -231,8 +231,8 @@ let plan = deer.planner.plan(&deer.world_state, &deer.goals[0]).expect("no plan 
 
 Dog Soap is free, open source and permissively licensed! Except where noted (below and/or in individual files), all code in this repository is dual-licensed under either:
 
-    	MIT License (LICENSE-MIT or http://opensource.org/licenses/MIT)
-    	Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
+    		MIT License (LICENSE-MIT or http://opensource.org/licenses/MIT)
+    		Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
 
 at your option. This means you can select the license you prefer! This dual-licensing approach is the de-facto standard in the Rust ecosystem and there are very good reasons to include both.
 
