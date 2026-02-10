@@ -35,6 +35,8 @@ impl Planner {
 		goal: &Goal,
 		max_actions: usize,
 	) -> Result<Plan, PlannerError> {
+		let goal = goal.with_resolve_conditions_fully_resolved(start);
+
 		// run A* / Dijkstra
 		let result = astar(
 			&(start.clone(), 0),

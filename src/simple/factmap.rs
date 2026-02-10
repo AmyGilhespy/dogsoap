@@ -99,10 +99,15 @@ impl FactMap {
 		string: impl Into<String>,
 	) -> Result<Condition, ParseConditionError> {
 		let string = string.into();
-		let fields = string
+		let mut fields = string
 			.as_str()
 			.split_ascii_whitespace()
 			.collect::<Vec<&str>>();
+		let resolve = fields.len() == 4 && fields[2] == "resolve";
+		if resolve {
+			fields.remove(2);
+		}
+		let fields = fields;
 		if fields.len() != 3 {
 			return Err(ParseConditionError::WrongFieldCount);
 		}
@@ -113,14 +118,26 @@ impl FactMap {
 		if rhs.is_error() {
 			return Err(ParseConditionError::RhsNotAFactNameOrId);
 		}
-		match fields[1] {
-			"==" => Ok(Condition::Eq(lhs, rhs)),
-			"!=" => Ok(Condition::Ne(lhs, rhs)),
-			">" => Ok(Condition::Gt(lhs, rhs)),
-			"<" => Ok(Condition::Lt(lhs, rhs)),
-			">=" => Ok(Condition::Ge(lhs, rhs)),
-			"<=" => Ok(Condition::Le(lhs, rhs)),
-			_ => Err(ParseConditionError::UnrecognizedOperator),
+		if resolve {
+			match fields[1] {
+				"==" => Ok(Condition::EqResolve(lhs, rhs)),
+				"!=" => Ok(Condition::NeResolve(lhs, rhs)),
+				">" => Ok(Condition::GtResolve(lhs, rhs)),
+				"<" => Ok(Condition::LtResolve(lhs, rhs)),
+				">=" => Ok(Condition::GeResolve(lhs, rhs)),
+				"<=" => Ok(Condition::LeResolve(lhs, rhs)),
+				_ => Err(ParseConditionError::UnrecognizedOperator),
+			}
+		} else {
+			match fields[1] {
+				"==" => Ok(Condition::Eq(lhs, rhs)),
+				"!=" => Ok(Condition::Ne(lhs, rhs)),
+				">" => Ok(Condition::Gt(lhs, rhs)),
+				"<" => Ok(Condition::Lt(lhs, rhs)),
+				">=" => Ok(Condition::Ge(lhs, rhs)),
+				"<=" => Ok(Condition::Le(lhs, rhs)),
+				_ => Err(ParseConditionError::UnrecognizedOperator),
+			}
 		}
 	}
 

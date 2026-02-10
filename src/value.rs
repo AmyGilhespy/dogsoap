@@ -23,8 +23,14 @@ impl Value {
 		matches!(self, Value::Error)
 	}
 
+	#[deprecated = "Use resolve_once instead."]
 	#[must_use]
 	pub fn resolve(&self, state: &WorldState) -> Value {
+		self.resolve_once(state)
+	}
+
+	#[must_use]
+	pub fn resolve_once(&self, state: &WorldState) -> Value {
 		match self {
 			Value::Ref(f) => state.get(*f),
 			_ => *self,

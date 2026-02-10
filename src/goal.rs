@@ -1,4 +1,4 @@
-use crate::condition::Condition;
+use crate::{WorldState, condition::Condition};
 
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -18,6 +18,15 @@ impl Goal {
 	pub fn push_condition(&mut self, condition: Condition) -> &mut Self {
 		self.conditions.push(condition);
 		self
+	}
+
+	#[must_use]
+	pub(crate) fn with_resolve_conditions_fully_resolved(&self, state: &WorldState) -> Self {
+		let mut resolved = self.clone();
+		for condition in &mut resolved.conditions {
+			*condition = condition.as_fully_resolved(state);
+		}
+		resolved
 	}
 }
 
