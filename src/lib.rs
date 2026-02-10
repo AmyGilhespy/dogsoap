@@ -84,8 +84,8 @@ mod tests {
 
 		// Plan!
 		let plan = planner
-			.plan(&start, &goal, 64)
-			.expect("no plan found within 64 actions");
+			.plan(&start, &goal, 8)
+			.expect("no plan found within 8 actions");
 
 		// Test typical usage:
 		for index in &plan.actions {

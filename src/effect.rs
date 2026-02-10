@@ -14,15 +14,13 @@ impl Effect {
 	pub fn apply(&self, state: &mut WorldState) {
 		match *self {
 			Effect::Set(fact, value) => {
-				state.values[usize::from(fact.0)] = value;
+				state.set(fact, value);
 			}
 			Effect::Add(fact, delta) => {
-				let index = usize::from(fact.0);
-				state.values[index] = state.values[index].add(&delta, state);
+				state.add(fact, delta);
 			}
 			Effect::Sub(fact, delta) => {
-				let index = usize::from(fact.0);
-				state.values[index] = state.values[index].sub(&delta, state);
+				state.sub(fact, delta);
 			}
 		}
 	}

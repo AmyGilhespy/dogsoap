@@ -41,7 +41,7 @@ planner.push_action(get_axe);
 planner.push_action(chop_wood);
 
 // Plan!
-let plan = planner.plan(&start, &goal, 64).expect("no plan found within 64 actions");
+let plan = planner.plan(&start, &goal, 8).expect("no plan found within 8 actions");
 
 // Use the plan
 for index in &plan.actions {
@@ -224,7 +224,7 @@ let deer = Npc {
 };
 
 // Then, later:
-let plan = deer.planner.plan(&deer.world_state, &deer.goals[0], 64).expect("no plan found within 64 actions");
+let plan = deer.planner.plan(&deer.world_state, &deer.goals[0], 8).expect("no plan found within 8 actions");
 ```
 
 # License

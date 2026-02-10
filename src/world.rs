@@ -92,6 +92,24 @@ impl WorldState {
 		self.values[fact] = value;
 		self
 	}
+
+	pub fn add(&mut self, fact: FactId, value: Value) -> &mut Self {
+		let fact = usize::from(fact.0);
+		if fact >= self.values.len() {
+			self.values.resize(fact + 1, Value::default());
+		}
+		self.values[fact] = self.values[fact].add(&value, self);
+		self
+	}
+
+	pub fn sub(&mut self, fact: FactId, value: Value) -> &mut Self {
+		let fact = usize::from(fact.0);
+		if fact >= self.values.len() {
+			self.values.resize(fact + 1, Value::default());
+		}
+		self.values[fact] = self.values[fact].sub(&value, self);
+		self
+	}
 }
 
 impl Default for WorldState {
