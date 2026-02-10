@@ -83,7 +83,9 @@ mod tests {
 		planner.push_action(chop_wood);
 
 		// Plan!
-		let plan = planner.plan(&start, &goal).expect("no plan found");
+		let plan = planner
+			.plan(&start, &goal, 64)
+			.expect("no plan found within 64 actions");
 
 		// Test typical usage:
 		for index in &plan.actions {
@@ -108,5 +110,38 @@ mod tests {
 				.name,
 			"Chop Wood"
 		);
+	}
+
+	#[test]
+	fn unreachable_goal() {
+		// Facts (...but consider using a FactMap!)
+		let has_axe = FactId(0);
+		let has_wood = FactId(1);
+
+		// Initial world state
+		let mut start = WorldState::new(0);
+		start.set(has_axe, Value::FALSE);
+		start.set(has_wood, Value::FALSE);
+
+		// Actions
+		let chop_wood = Action {
+			name: "Chop Wood".into(),
+			cost: Cost(2),
+			preconditions: vec![Condition::Eq(has_axe, Value::TRUE)],
+			effects: vec![Effect::Set(has_wood, Value::TRUE)],
+			executors: vec![],
+		};
+
+		// Goal
+		let mut goal = Goal::new("Get wood");
+		goal.push_condition(Condition::Eq(has_wood, Value::TRUE));
+
+		// Planner
+		let mut planner = Planner::new();
+		planner.push_action(chop_wood);
+
+		// Plan!
+		let plan_result = planner.plan(&start, &goal, 64);
+		assert!(plan_result.is_err(), "plan succeeded where it should fail");
 	}
 }

@@ -29,13 +29,18 @@ impl Planner {
 	/// # Errors
 	/// - `PlannerError.NoPlanFound`: If no plan is found
 	/// - `PlannerError.UnreachableState`: If the planner produced an unreachable state between steps
-	pub fn plan(&self, start: &WorldState, goal: &Goal) -> Result<Plan, PlannerError> {
+	pub fn plan(
+		&self,
+		start: &WorldState,
+		goal: &Goal,
+		max_actions: usize,
+	) -> Result<Plan, PlannerError> {
 		// run A* / Dijkstra
 		let result = astar(
-			start,
-			|state| self.successors(state),
+			&(start.clone(), 0),
+			|state| self.successors(state, max_actions),
 			|_| Cost(0),
-			|state| conditions_met(&goal.conditions, state),
+			|state| conditions_met(&goal.conditions, &state.0),
 		);
 
 		let (path, cost) = result.ok_or(PlannerError::NoPlanFound)?;
@@ -51,9 +56,9 @@ impl Planner {
 				.iter()
 				.enumerate()
 				.find_map(|(i, action)| {
-					if conditions_met(&action.preconditions, from) {
-						let next = from.with_effects(&action.effects);
-						if &next == to { Some(i) } else { None }
+					if conditions_met(&action.preconditions, &from.0) {
+						let next = from.0.with_effects(&action.effects);
+						if next == to.0 { Some(i) } else { None }
 					} else {
 						None
 					}
@@ -78,13 +83,19 @@ impl Planner {
 		}
 	}
 
-	fn successors(&self, state: &WorldState) -> Vec<(WorldState, Cost)> {
+	fn successors(
+		&self,
+		state: &(WorldState, usize),
+		max_actions: usize,
+	) -> Vec<((WorldState, usize), Cost)> {
 		let mut result = Vec::new();
 
-		for action in &self.actions {
-			if conditions_met(&action.preconditions, state) {
-				let next_state = state.with_effects(&action.effects);
-				result.push((next_state, action.cost));
+		if state.1 < max_actions {
+			for action in &self.actions {
+				if conditions_met(&action.preconditions, &state.0) {
+					let next_state = (state.0.with_effects(&action.effects), state.1 + 1);
+					result.push((next_state, action.cost));
+				}
 			}
 		}
 
