@@ -44,8 +44,8 @@ planner.push_action(chop_wood);
 let plan = planner.plan(&start, &goal, 8).expect("no plan found within 8 actions");
 
 // Use the plan
-for index in &plan.actions {
-	if let Some(action) = planner.get_plan_action(&plan, *index) {
+for index in 0..plan.len() {
+	if let Some(action) = planner.get_plan_action(&plan, index) {
 		println!("{}", action.name);
 	}
 }

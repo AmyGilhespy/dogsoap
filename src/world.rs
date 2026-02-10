@@ -42,16 +42,6 @@ impl WorldState {
 		}
 	}
 
-	#[deprecated = "Use set instead."]
-	pub fn push_fact(&mut self, fact: FactId, value: Value) -> &mut Self {
-		let fact = usize::from(fact.0);
-		if fact >= self.values.len() {
-			self.values.resize(fact + 1, Value::default());
-		}
-		self.values[fact] = value;
-		self
-	}
-
 	pub fn apply_effects(&mut self, effects: &[Effect]) -> &mut Self {
 		for effect in effects {
 			effect.apply(self);

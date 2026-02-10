@@ -71,14 +71,14 @@ impl Planner {
 		}
 
 		Ok(Plan {
-			actions: action_indices,
 			total_cost: cost,
+			action_indices,
 		})
 	}
 
 	#[must_use]
 	pub fn get_plan_action(&self, plan: &Plan, index: usize) -> Option<&Action> {
-		if let Some(action_index) = plan.actions.get(index) {
+		if let Some(action_index) = plan.action_indices.get(index) {
 			self.actions.get(*action_index)
 		} else {
 			None

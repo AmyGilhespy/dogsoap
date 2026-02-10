@@ -88,14 +88,14 @@ mod tests {
 			.expect("no plan found within 8 actions");
 
 		// Test typical usage:
-		for index in &plan.actions {
-			if let Some(action) = planner.get_plan_action(&plan, *index) {
+		for index in 0..plan.len() {
+			if let Some(action) = planner.get_plan_action(&plan, index) {
 				println!("{}", action.name);
 			}
 		}
 
 		// Verify plan
-		assert_eq!(plan.actions.len(), 2);
+		assert_eq!(plan.len(), 2);
 		assert_eq!(
 			planner
 				.get_plan_action(&plan, 0)
@@ -143,5 +143,72 @@ mod tests {
 		// Plan!
 		let plan_result = planner.plan(&start, &goal, 64);
 		assert!(plan_result.is_err(), "plan succeeded where it should fail");
+	}
+
+	#[test]
+	fn simple_goap_plan_reversed() {
+		// Facts (...but consider using a FactMap!)
+		let has_axe = FactId(0);
+		let has_wood = FactId(1);
+
+		// Initial world state
+		let mut start = WorldState::new(0);
+		start.set(has_axe, Value::FALSE);
+		start.set(has_wood, Value::FALSE);
+
+		// Actions
+		let chop_wood = Action {
+			name: "Chop Wood".into(),
+			cost: Cost(2),
+			preconditions: vec![Condition::Eq(has_axe, Value::TRUE)],
+			effects: vec![Effect::Set(has_wood, Value::TRUE)],
+			executors: vec![],
+		};
+
+		let get_axe = Action {
+			name: "Get Axe".into(),
+			cost: Cost(1),
+			preconditions: vec![],
+			effects: vec![Effect::Set(has_axe, Value::TRUE)],
+			executors: vec![],
+		};
+
+		// Goal
+		let mut goal = Goal::new("Get wood");
+		goal.push_condition(Condition::Eq(has_wood, Value::TRUE));
+
+		// Planner
+		let mut planner = Planner::new();
+		planner.push_action(chop_wood);
+		planner.push_action(get_axe);
+
+		// Plan!
+		let plan = planner
+			.plan(&start, &goal, 8)
+			.expect("no plan found within 8 actions");
+
+		// Test typical usage:
+		for index in 0..plan.len() {
+			if let Some(action) = planner.get_plan_action(&plan, index) {
+				println!("{}", action.name);
+			}
+		}
+
+		// Verify plan
+		assert_eq!(plan.len(), 2);
+		assert_eq!(
+			planner
+				.get_plan_action(&plan, 0)
+				.expect("missing action")
+				.name,
+			"Get Axe"
+		);
+		assert_eq!(
+			planner
+				.get_plan_action(&plan, 1)
+				.expect("missing action")
+				.name,
+			"Chop Wood"
+		);
 	}
 }
