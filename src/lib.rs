@@ -53,8 +53,8 @@ mod tests {
 
 		// Initial world state
 		let mut start = WorldState::new(0);
-		start.push_fact(has_axe, Value::FALSE);
-		start.push_fact(has_wood, Value::FALSE);
+		start.set(has_axe, Value::FALSE);
+		start.set(has_wood, Value::FALSE);
 
 		// Actions
 		let get_axe = Action {

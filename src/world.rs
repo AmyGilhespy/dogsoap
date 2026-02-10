@@ -42,6 +42,7 @@ impl WorldState {
 		}
 	}
 
+	#[deprecated = "Use set instead."]
 	pub fn push_fact(&mut self, fact: FactId, value: Value) -> &mut Self {
 		let fact = usize::from(fact.0);
 		if fact >= self.values.len() {
@@ -61,7 +62,7 @@ impl WorldState {
 	#[must_use]
 	pub fn with_fact(&self, fact: FactId, value: Value) -> Self {
 		let mut next = self.clone();
-		let _ = next.push_fact(fact, value);
+		let _ = next.set(fact, value);
 		next
 	}
 
@@ -75,12 +76,21 @@ impl WorldState {
 	#[inline]
 	#[must_use]
 	pub fn get(&self, fact: FactId) -> Value {
-		self.values[usize::from(fact.0)]
+		let index = usize::from(fact.0);
+		if index < self.values.len() {
+			self.values[index]
+		} else {
+			Value::Error
+		}
 	}
 
-	#[inline]
-	pub fn set(&mut self, fact: FactId, value: Value) {
-		self.values[usize::from(fact.0)] = value;
+	pub fn set(&mut self, fact: FactId, value: Value) -> &mut Self {
+		let fact = usize::from(fact.0);
+		if fact >= self.values.len() {
+			self.values.resize(fact + 1, Value::default());
+		}
+		self.values[fact] = value;
+		self
 	}
 }
 
