@@ -1,6 +1,6 @@
 use crate::{
 	Condition, Effect, FactId, Value,
-	errors::{NewFactError, ParseConditionError, ParseEffectError},
+	errors::{ParseConditionError, ParseEffectError},
 };
 
 #[cfg(feature = "dashmap")]
@@ -12,19 +12,11 @@ pub trait FactMap {
 	#[must_use]
 	fn new() -> Self;
 
-	/// # Errors
-	/// - `NewFactError::EmptyFactName`: if the provided fact name was empty
-	/// - `NewFactError::InitialDigitFactName`: if the provided fact name begins with a digit
-	/// - `NewFactError::DuplicateFactName`: if the provided fact name was already used
-	/// - `NewFactError::ContainsAsciiWhitespaceFactName`: if the provided fact names contains ascii whitespace
-	/// - `NewFactError::OutOfFactIdSpace`: somehow you used 65k fact ids and want to keep going
-	fn new_fact(&mut self, fact_name: impl Into<String>) -> Result<FactId, NewFactError>;
-
 	#[must_use]
 	fn get_fact_id(&self, fact_name: impl Into<String>) -> Option<FactId>;
 
 	#[must_use]
-	fn get_fact_names(&self) -> &Vec<String>;
+	fn get_fact_names(&self) -> Vec<String>;
 
 	/// Parse a value string such as:
 	/// `"3"` => `Value::Int(3)`

@@ -7,7 +7,7 @@ mod fact;
 mod goal;
 mod plan;
 mod planner;
-mod prelude;
+pub mod prelude;
 #[cfg(feature = "simple")]
 mod simple;
 mod state;
@@ -24,7 +24,7 @@ pub use plan::Plan;
 pub use planner::Planner;
 #[cfg(feature = "simple")]
 pub use simple::{
-	agent::Agent,
+	brain::Brain,
 	factmap::FactMap,
 	factmap::hashfactmap::HashFactMap,
 	world::{WORLD_FACTS, WORLD_STATE},

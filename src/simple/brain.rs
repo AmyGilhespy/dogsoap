@@ -10,7 +10,7 @@ use crate::simple::world::{WORLD_FACTS, WORLD_STATE};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Agent {
+pub struct Brain {
 	/// Map of stats that pertain to the agent
 	pub stats: HashFactMap,
 
@@ -28,7 +28,7 @@ pub struct Agent {
 	pub thought_updater: HashMap<String, String>,
 }
 
-impl Agent {
+impl Brain {
 	#[must_use]
 	pub fn new(num_stats: usize, num_thoughts: usize) -> Self {
 		Self {
@@ -99,10 +99,11 @@ impl Agent {
 				"world" => WORLD_FACTS
 					.get_fact_id(fact_name)
 					.and_then(|world_fact_id| {
+						let state = WORLD_STATE.read().unwrap();
 						#[allow(clippy::cast_precision_loss)]
-						WORLD_STATE
+						state
 							.get(world_fact_id)
-							.resolve_fully(&WORLD_STATE)
+							.resolve_fully(&state)
 							.int()
 							.map(|i| i as f64)
 					}),
@@ -115,7 +116,7 @@ impl Agent {
 	}
 }
 
-impl Default for Agent {
+impl Default for Brain {
 	fn default() -> Self {
 		Self::new(0, 0)
 	}

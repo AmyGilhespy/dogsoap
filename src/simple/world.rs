@@ -1,4 +1,4 @@
-use std::sync::LazyLock;
+use std::sync::{LazyLock, RwLock};
 
 use crate::{State, simple::factmap::dashfactmap::DashFactMap};
 
@@ -6,4 +6,4 @@ use crate::{State, simple::factmap::dashfactmap::DashFactMap};
 pub static WORLD_FACTS: LazyLock<DashFactMap> = LazyLock::new(DashFactMap::default);
 
 /// The global state of the world.
-pub static WORLD_STATE: LazyLock<State> = LazyLock::new(State::default);
+pub static WORLD_STATE: LazyLock<RwLock<State>> = LazyLock::new(|| RwLock::new(State::default()));

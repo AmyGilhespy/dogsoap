@@ -12,7 +12,7 @@ pub use crate::planner::Planner;
 
 #[cfg(feature = "simple")]
 #[allow(unused_imports)]
-pub use crate::simple::agent::Agent;
+pub use crate::simple::brain::Brain;
 
 #[cfg(feature = "simple")]
 #[allow(unused_imports)]

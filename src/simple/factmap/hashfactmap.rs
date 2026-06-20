@@ -19,12 +19,35 @@ impl FactMap for HashFactMap {
 		}
 	}
 
+	fn get_fact_id(&self, fact_name: impl Into<String>) -> Option<FactId> {
+		self.map.get(&fact_name.into()).copied()
+	}
+
+	fn get_fact_names(&self) -> Vec<String> {
+		self.lut.clone()
+	}
+}
+
+impl Default for HashFactMap {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
+impl HashFactMap {
+	#[allow(dead_code)]
+	#[must_use]
+	fn get_map(&self) -> &HashMap<String, FactId> {
+		&self.map
+	}
+
 	/// # Errors
 	/// - `NewFactError::EmptyFactName`: if the provided fact name was empty
 	/// - `NewFactError::InitialDigitFactName`: if the provided fact name begins with a digit
 	/// - `NewFactError::DuplicateFactName`: if the provided fact name was already used
 	/// - `NewFactError::ContainsAsciiWhitespaceFactName`: if the provided fact names contains ascii whitespace
 	/// - `NewFactError::OutOfFactIdSpace`: somehow you used 65k fact ids and want to keep going
+	#[allow(dead_code)]
 	fn new_fact(&mut self, fact_name: impl Into<String>) -> Result<FactId, NewFactError> {
 		let fact_name = fact_name.into();
 		let Some(ch0) = fact_name.as_bytes().first() else {
@@ -47,27 +70,5 @@ impl FactMap for HashFactMap {
 		self.lut.push(fact_name.clone());
 		self.map.insert(fact_name, fact);
 		Ok(fact)
-	}
-
-	fn get_fact_id(&self, fact_name: impl Into<String>) -> Option<FactId> {
-		self.map.get(&fact_name.into()).copied()
-	}
-
-	fn get_fact_names(&self) -> &Vec<String> {
-		&self.lut
-	}
-}
-
-impl Default for HashFactMap {
-	fn default() -> Self {
-		Self::new()
-	}
-}
-
-impl HashFactMap {
-	#[allow(dead_code)]
-	#[must_use]
-	fn get_map(&self) -> &HashMap<String, FactId> {
-		&self.map
 	}
 }
