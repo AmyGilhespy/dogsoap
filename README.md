@@ -9,8 +9,8 @@ Dog Soap (Data Oriented, Simple, Goal-Oriented Action Planning) is a dirt-simple
 let has_axe = FactId(0);
 let has_wood = FactId(1);
 
-// Initial world state
-let mut start = WorldState::new(0);
+// Initial state
+let mut start = State::new(0);
 start.set(has_axe, Value::FALSE);
 start.set(has_wood, Value::FALSE);
 
@@ -153,14 +153,14 @@ for fact_name in template.facts {
 	}
 }
 
-// Initial World State
-let mut world_state = WorldState::default();
+// Initial State
+let mut state = State::default();
 for kv in template.initial_state {
 	let Some(fact_id) = facts.get_fact_id(&kv.0) else {
 		error!("Reference to undefined fact id \"{}\".", kv.0);
 		continue;
 	};
-	world_state = world_state.with_fact(fact_id, Value::Int(kv.1));
+	state = state.with_fact(fact_id, Value::Int(kv.1));
 }
 
 // Goals
@@ -217,14 +217,14 @@ for a in &template.actions {
 
 // Construct your NPC
 let deer = Npc {
-	world_state,
-	planner: ,
+	state,
+	planner,
 	facts,
 	goals,
 };
 
 // Then, later:
-let plan = deer.planner.plan(&deer.world_state, &deer.goals[0], 8).expect("no plan found within 8 actions");
+let plan = deer.planner.plan(&deer.state, &deer.goals[0], 8).expect("no plan found within 8 actions");
 ```
 
 # License

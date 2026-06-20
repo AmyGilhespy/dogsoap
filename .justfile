@@ -44,7 +44,8 @@ ci:
     clear
     cargo check
     cargo check --no-default-features
-    cargo check --features=bevy
+    cargo check --features=simple
+    cargo check --features=dashmap
     cargo check --features=serde
     cargo check --all-features
     cargo fmt --check
@@ -52,20 +53,24 @@ ci:
     cargo clippy -- -D warnings -W clippy::pedantic
     cargo clippy --no-default-features -- -D warnings
     cargo clippy --no-default-features -- -D warnings -W clippy::pedantic
-    cargo clippy --features=bevy -- -D warnings
-    cargo clippy --features=bevy -- -D warnings -W clippy::pedantic
+    cargo clippy --features=simple -- -D warnings
+    cargo clippy --features=simple -- -D warnings -W clippy::pedantic
+    cargo clippy --features=dashmap -- -D warnings
+    cargo clippy --features=dashmap -- -D warnings -W clippy::pedantic
     cargo clippy --features=serde -- -D warnings
     cargo clippy --features=serde -- -D warnings -W clippy::pedantic
     cargo clippy --all-features -- -D warnings
     cargo clippy --all-features -- -D warnings -W clippy::pedantic
     cargo test
     cargo test --no-default-features
-    cargo test --features=bevy
+    cargo test --features=simple
+    cargo test --features=dashmap
     cargo test --features=serde
     cargo test --all-features
     cargo build
     cargo build --no-default-features
-    cargo build --features=bevy
+    cargo build --features=simple
+    cargo build --features=dashmap
     cargo build --features=serde
     cargo build --all-features
 

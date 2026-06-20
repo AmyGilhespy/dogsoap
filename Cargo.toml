@@ -1,23 +1,28 @@
 [package]
 name = "dogsoap"
-version = "4.0.0"
+version = "5.0.0-alpha.1"
 edition = "2024"
 description = "Data-Oriented, Simple, Goal-Oriented Action Planning"
 license = "MIT OR Apache-2.0"
-authors = ["Amy Gilhespy <amyogilhespy@gmail.com>"]
 categories = ["games", "game-development"]
-keywords = ["goap", "dogoap", "ai", "bevy"]
+keywords = ["goap", "dogoap", "ai"]
 repository = "https://github.com/AmyGilhespy/dogsoap"
 
 [dependencies]
-bevy = { version = "0.18.0", optional = true, default-features = false }
-hashbrown = { version = "0.16.1", optional = true, features = ["serde"] }
-pathfinding = "4.14.0"
+dashmap = { version = "6.2.1", optional = true }
+fasteval = { version = "0.2.4", optional = true }
+hashbrown = { version = "0.17.1", optional = true, features = ["serde"] }
+nanoserde = { version = "0.2.1", optional = true, default-features = false, features = [
+	"ron",
+] }
+pathfinding = "4.15.0"
 serde = { version = "1.0.228", optional = true, features = ["derive"] }
 thiserror = "2.0.18"
 
 [features]
-default = ["simple"]
-bevy = ["dep:bevy"]
+default = ["simple", "nanoserde"]
 serde = ["dep:serde"]
-simple = ["hashbrown"]
+nanoserde = ["dep:nanoserde"]
+simple = ["hashbrown", "dashmap", "fasteval"]
+dashmap = ["dep:dashmap"]
+fasteval = ["dep:fasteval"]

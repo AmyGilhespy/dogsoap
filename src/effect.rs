@@ -1,8 +1,9 @@
 use crate::fact::FactId;
+use crate::state::State;
 use crate::value::Value;
-use crate::world::WorldState;
 
 #[derive(Clone, Copy, Debug)]
+#[cfg_attr(feature = "nanoserde", derive(nanoserde::DeRon))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Effect {
 	Set(FactId, Value),
@@ -11,7 +12,7 @@ pub enum Effect {
 }
 
 impl Effect {
-	pub fn apply(&self, state: &mut WorldState) {
+	pub fn apply(&self, state: &mut State) {
 		match *self {
 			Effect::Set(fact, value) => {
 				state.set(fact, value);

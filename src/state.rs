@@ -5,12 +5,13 @@ use crate::value::Value;
 /// Regarding `Eq`, `PartialEq`, and `Hash`:
 /// `Value::Error` is considered equal to `Value::Error` here so that comparing hashes produces the same result as comparing values.
 #[derive(Clone, Debug)] // Eq, Hash are required by astar
+#[cfg_attr(feature = "nanoserde", derive(nanoserde::DeRon))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct WorldState {
+pub struct State {
 	pub(crate) values: Vec<Value>, // indexed by FactId
 }
 
-impl PartialEq for WorldState {
+impl PartialEq for State {
 	fn eq(&self, other: &Self) -> bool {
 		if self.values.len() != other.values.len() {
 			return false;
@@ -22,9 +23,9 @@ impl PartialEq for WorldState {
 	}
 }
 
-impl Eq for WorldState {}
+impl Eq for State {}
 
-impl core::hash::Hash for WorldState {
+impl core::hash::Hash for State {
 	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
 		self.values
 			.iter()
@@ -34,7 +35,7 @@ impl core::hash::Hash for WorldState {
 	}
 }
 
-impl WorldState {
+impl State {
 	#[must_use]
 	pub fn new(num_facts: usize) -> Self {
 		Self {
@@ -102,7 +103,7 @@ impl WorldState {
 	}
 }
 
-impl Default for WorldState {
+impl Default for State {
 	fn default() -> Self {
 		Self::new(0)
 	}

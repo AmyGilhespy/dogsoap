@@ -1,7 +1,8 @@
 use crate::fact::FactId;
-use crate::world::WorldState;
+use crate::state::State;
 
 #[derive(Clone, Copy, Debug, Hash)]
+#[cfg_attr(feature = "nanoserde", derive(nanoserde::DeRon))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Value {
 	Int(i64),
@@ -14,7 +15,15 @@ impl Value {
 	pub const TRUE: Value = Value::Int(1);
 
 	#[must_use]
-	pub fn is_ref(&self) -> bool {
+	pub fn int(&self) -> Option<i64> {
+		match self {
+			Self::Int(int) => Some(*int),
+			_ => None,
+		}
+	}
+
+	#[must_use]
+	pub fn is_fact_ref(&self) -> bool {
 		matches!(self, Value::Ref(_))
 	}
 
@@ -24,7 +33,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn resolve_once(&self, state: &WorldState) -> Value {
+	pub fn resolve_once(&self, state: &State) -> Value {
 		match self {
 			Value::Ref(f) => state.get(*f),
 			_ => *self,
@@ -32,7 +41,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn resolve_fully(&self, state: &WorldState) -> Value {
+	pub fn resolve_fully(&self, state: &State) -> Value {
 		let mut val = *self;
 		while let Value::Ref(f) = val {
 			val = state.get(f);
@@ -41,7 +50,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn eq_even_error(&self, other: &Self, state: &WorldState) -> bool {
+	pub fn eq_even_error(&self, other: &Self, state: &State) -> bool {
 		if let Value::Int(lhs) = self.resolve_fully(state)
 			&& let Value::Int(rhs) = other.resolve_fully(state)
 		{
@@ -52,7 +61,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn eq(&self, other: &Self, state: &WorldState) -> bool {
+	pub fn eq(&self, other: &Self, state: &State) -> bool {
 		if self.is_error() || other.is_error() {
 			return false;
 		}
@@ -60,7 +69,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn ne(&self, other: &Self, state: &WorldState) -> bool {
+	pub fn ne(&self, other: &Self, state: &State) -> bool {
 		if self.is_error() || other.is_error() {
 			return false;
 		}
@@ -68,7 +77,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn lt(&self, other: &Self, state: &WorldState) -> bool {
+	pub fn lt(&self, other: &Self, state: &State) -> bool {
 		if self.is_error() || other.is_error() {
 			return false;
 		}
@@ -82,7 +91,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn gt(&self, other: &Self, state: &WorldState) -> bool {
+	pub fn gt(&self, other: &Self, state: &State) -> bool {
 		if self.is_error() || other.is_error() {
 			return false;
 		}
@@ -96,7 +105,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn le(&self, other: &Self, state: &WorldState) -> bool {
+	pub fn le(&self, other: &Self, state: &State) -> bool {
 		if self.is_error() || other.is_error() {
 			return false;
 		}
@@ -104,7 +113,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn ge(&self, other: &Self, state: &WorldState) -> bool {
+	pub fn ge(&self, other: &Self, state: &State) -> bool {
 		if self.is_error() || other.is_error() {
 			return false;
 		}
@@ -112,7 +121,7 @@ impl Value {
 	}
 
 	#[must_use]
-	pub fn add(&self, other: &Self, state: &WorldState) -> Value {
+	pub fn add(&self, other: &Self, state: &State) -> Value {
 		if let Value::Int(lhs) = self.resolve_fully(state)
 			&& let Value::Int(rhs) = other.resolve_fully(state)
 		{
@@ -122,12 +131,12 @@ impl Value {
 		}
 	}
 
-	pub fn add_assign(&mut self, other: &Self, state: &WorldState) {
+	pub fn add_assign(&mut self, other: &Self, state: &State) {
 		*self = self.add(other, state);
 	}
 
 	#[must_use]
-	pub fn sub(&self, other: &Self, state: &WorldState) -> Value {
+	pub fn sub(&self, other: &Self, state: &State) -> Value {
 		if let Value::Int(lhs) = self.resolve_fully(state)
 			&& let Value::Int(rhs) = other.resolve_fully(state)
 		{
@@ -137,7 +146,7 @@ impl Value {
 		}
 	}
 
-	pub fn sub_assign(&mut self, other: &Self, state: &WorldState) {
+	pub fn sub_assign(&mut self, other: &Self, state: &State) {
 		*self = self.sub(other, state);
 	}
 }

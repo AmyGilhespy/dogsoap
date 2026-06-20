@@ -1,6 +1,4 @@
 mod action;
-#[cfg(feature = "bevy")]
-mod bevy;
 mod condition;
 mod cost;
 mod effect;
@@ -9,10 +7,11 @@ mod fact;
 mod goal;
 mod plan;
 mod planner;
+mod prelude;
 #[cfg(feature = "simple")]
 mod simple;
+mod state;
 mod value;
-mod world;
 
 pub use action::Action;
 pub use condition::{Condition, conditions_met};
@@ -24,9 +23,14 @@ pub use goal::Goal;
 pub use plan::Plan;
 pub use planner::Planner;
 #[cfg(feature = "simple")]
-pub use simple::*;
+pub use simple::{
+	agent::Agent,
+	factmap::FactMap,
+	factmap::hashfactmap::HashFactMap,
+	world::{WORLD_FACTS, WORLD_STATE},
+};
+pub use state::State;
 pub use value::Value;
-pub use world::WorldState;
 
 #[cfg(test)]
 mod tests {
@@ -36,7 +40,7 @@ mod tests {
 	fn condition_and_effects_work() {
 		let health = FactId(0);
 
-		let start = WorldState::new(0).with_fact(health, Value::Int(10));
+		let start = State::new(0).with_fact(health, Value::Int(10));
 
 		let healed = start.with_effects(&[Effect::Add(health, Value::Int(5))]);
 
@@ -51,8 +55,8 @@ mod tests {
 		let has_axe = FactId(0);
 		let has_wood = FactId(1);
 
-		// Initial world state
-		let mut start = WorldState::new(0);
+		// Initial state
+		let mut start = State::new(0);
 		start.set(has_axe, Value::FALSE);
 		start.set(has_wood, Value::FALSE);
 
@@ -118,8 +122,8 @@ mod tests {
 		let has_axe = FactId(0);
 		let has_wood = FactId(1);
 
-		// Initial world state
-		let mut start = WorldState::new(0);
+		// Initial state
+		let mut start = State::new(0);
 		start.set(has_axe, Value::FALSE);
 		start.set(has_wood, Value::FALSE);
 
@@ -151,8 +155,8 @@ mod tests {
 		let has_axe = FactId(0);
 		let has_wood = FactId(1);
 
-		// Initial world state
-		let mut start = WorldState::new(0);
+		// Initial state
+		let mut start = State::new(0);
 		start.set(has_axe, Value::FALSE);
 		start.set(has_wood, Value::FALSE);
 

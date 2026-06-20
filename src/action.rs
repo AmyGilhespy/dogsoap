@@ -3,6 +3,7 @@ use crate::cost::Cost;
 use crate::effect::Effect;
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "nanoserde", derive(nanoserde::DeRon))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Action {
 	pub name: String,

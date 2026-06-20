@@ -1,8 +1,9 @@
 use crate::fact::FactId;
+use crate::state::State;
 use crate::value::Value;
-use crate::world::WorldState;
 
 #[derive(Clone, Copy, Debug)]
+#[cfg_attr(feature = "nanoserde", derive(nanoserde::DeRon))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Condition {
 	Eq(FactId, Value),
@@ -21,7 +22,7 @@ pub enum Condition {
 
 impl Condition {
 	#[must_use]
-	pub fn is_satisfied(&self, state: &WorldState) -> bool {
+	pub fn is_satisfied(&self, state: &State) -> bool {
 		match *self {
 			Condition::Eq(fact, value) | Condition::EqResolve(fact, value) => {
 				state.get(fact).eq(&value, state)
@@ -45,7 +46,7 @@ impl Condition {
 	}
 
 	#[must_use]
-	pub(crate) fn as_fully_resolved(&self, state: &WorldState) -> Condition {
+	pub(crate) fn as_fully_resolved(&self, state: &State) -> Condition {
 		match *self {
 			Condition::EqResolve(fact, value) => Condition::Eq(fact, value.resolve_fully(state)),
 			Condition::NeResolve(fact, value) => Condition::Ne(fact, value.resolve_fully(state)),
@@ -59,6 +60,6 @@ impl Condition {
 }
 
 #[must_use]
-pub fn conditions_met(conditions: &[Condition], state: &WorldState) -> bool {
+pub fn conditions_met(conditions: &[Condition], state: &State) -> bool {
 	conditions.iter().all(|cond| cond.is_satisfied(state))
 }

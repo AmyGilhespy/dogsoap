@@ -1,3 +1,5 @@
-mod factmap;
+pub mod agent;
+pub mod factmap;
 
-pub use factmap::FactMap;
+#[cfg(feature = "dashmap")]
+pub mod world;

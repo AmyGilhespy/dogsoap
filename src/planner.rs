@@ -6,9 +6,10 @@ use crate::cost::Cost;
 use crate::errors::PlannerError;
 use crate::goal::Goal;
 use crate::plan::Plan;
-use crate::world::WorldState;
+use crate::state::State;
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "nanoserde", derive(nanoserde::DeRon))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Planner {
 	actions: Vec<Action>,
@@ -31,7 +32,7 @@ impl Planner {
 	/// - `PlannerError.UnreachableState`: If the planner produced an unreachable state between steps
 	pub fn plan(
 		&self,
-		start: &WorldState,
+		start: &State,
 		goal: &Goal,
 		max_actions: usize,
 	) -> Result<Plan, PlannerError> {
@@ -87,9 +88,9 @@ impl Planner {
 
 	fn successors(
 		&self,
-		state: &(WorldState, usize),
+		state: &(State, usize),
 		max_actions: usize,
-	) -> Vec<((WorldState, usize), Cost)> {
+	) -> Vec<((State, usize), Cost)> {
 		let mut result = Vec::new();
 
 		if state.1 < max_actions {

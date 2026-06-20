@@ -1,6 +1,7 @@
-use crate::{WorldState, condition::Condition};
+use crate::{State, condition::Condition};
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "nanoserde", derive(nanoserde::DeRon))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Goal {
 	pub name: String,
@@ -21,7 +22,7 @@ impl Goal {
 	}
 
 	#[must_use]
-	pub(crate) fn with_resolve_conditions_fully_resolved(&self, state: &WorldState) -> Self {
+	pub(crate) fn with_resolve_conditions_fully_resolved(&self, state: &State) -> Self {
 		let mut resolved = self.clone();
 		for condition in &mut resolved.conditions {
 			*condition = condition.as_fully_resolved(state);
