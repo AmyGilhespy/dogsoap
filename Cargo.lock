@@ -60,7 +60,7 @@ dependencies = [
 
 [[package]]
 name = "dogsoap"
-version = "5.0.0-alpha.2"
+version = "5.0.0-alpha.3"
 dependencies = [
  "dashmap",
  "fasteval",

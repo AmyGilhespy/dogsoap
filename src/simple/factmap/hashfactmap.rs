@@ -37,7 +37,7 @@ impl Default for HashFactMap {
 impl HashFactMap {
 	#[allow(dead_code)]
 	#[must_use]
-	fn get_map(&self) -> &HashMap<String, FactId> {
+	pub fn get_map(&self) -> &HashMap<String, FactId> {
 		&self.map
 	}
 
@@ -47,8 +47,7 @@ impl HashFactMap {
 	/// - `NewFactError::DuplicateFactName`: if the provided fact name was already used
 	/// - `NewFactError::ContainsAsciiWhitespaceFactName`: if the provided fact names contains ascii whitespace
 	/// - `NewFactError::OutOfFactIdSpace`: somehow you used 65k fact ids and want to keep going
-	#[allow(dead_code)]
-	fn new_fact(&mut self, fact_name: impl Into<String>) -> Result<FactId, NewFactError> {
+	pub fn new_fact(&mut self, fact_name: impl Into<String>) -> Result<FactId, NewFactError> {
 		let fact_name = fact_name.into();
 		let Some(ch0) = fact_name.as_bytes().first() else {
 			return Err(NewFactError::EmptyFactName);
