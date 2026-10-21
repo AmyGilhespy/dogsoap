@@ -26,7 +26,7 @@ pub use planner::Planner;
 pub use simple::{
 	brain::Brain,
 	factmap::FactMap,
-	factmap::hashfactmap::HashFactMap,
+	factmap::ahashfactmap::AHashFactMap,
 	world::{WORLD_FACTS, WORLD_STATE},
 };
 pub use state::State;

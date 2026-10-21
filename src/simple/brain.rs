@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
 	State, Value,
-	simple::factmap::{FactMap, hashfactmap::HashFactMap},
+	simple::factmap::{FactMap, ahashfactmap::AHashFactMap},
 };
 
 #[cfg(feature = "dashmap")]
@@ -12,13 +12,13 @@ use crate::simple::world::{WORLD_FACTS, WORLD_STATE};
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Brain {
 	/// Map of stats that pertain to the agent
-	pub stats: HashFactMap,
+	pub stats: AHashFactMap,
 
 	/// State of the agent's stats, i.e. things that are factual about the agent
 	pub stat_state: State,
 
 	/// Map of thoughts that pertain to the agent
-	pub thoughts: HashFactMap,
+	pub thoughts: AHashFactMap,
 
 	/// State of the agent's thoughts, i.e. things that the agent believes to be true
 	pub thought_state: State,
@@ -32,10 +32,10 @@ impl Brain {
 	#[must_use]
 	pub fn new(num_stats: usize, num_thoughts: usize) -> Self {
 		Self {
-			stats: HashFactMap::new(),
+			stats: AHashFactMap::new(),
 			stat_state: State::new(num_stats),
 
-			thoughts: HashFactMap::new(),
+			thoughts: AHashFactMap::new(),
 			thought_state: State::new(num_thoughts),
 
 			#[cfg(feature = "fasteval")]

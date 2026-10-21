@@ -1,6 +1,6 @@
 [package]
 name = "dogsoap"
-version = "5.0.0-alpha.3"
+version = "6.0.0-alpha.1"
 edition = "2024"
 description = "Data-Oriented, Simple, Goal-Oriented Action Planning"
 license = "MIT OR Apache-2.0"
@@ -9,9 +9,9 @@ keywords = ["goap", "dogoap", "ai"]
 repository = "https://github.com/AmyGilhespy/dogsoap"
 
 [dependencies]
+ahash = { version = "0.8.12", optional = true, features = ["serde"] }
 dashmap = { version = "6.2.1", optional = true }
 fasteval = { version = "0.2.4", optional = true }
-hashbrown = { version = "0.17.1", optional = true, features = ["serde"] }
 nanoserde = { version = "0.2.1", optional = true, default-features = false, features = [
 	"ron",
 ] }
@@ -23,6 +23,6 @@ thiserror = "2.0.18"
 default = ["simple", "nanoserde"]
 serde = ["dep:serde"]
 nanoserde = ["dep:nanoserde"]
-simple = ["hashbrown", "dashmap", "fasteval"]
+simple = ["ahash", "dashmap", "fasteval"]
 dashmap = ["dep:dashmap"]
 fasteval = ["dep:fasteval"]

@@ -3,10 +3,10 @@ use crate::{
 	errors::{ParseConditionError, ParseEffectError},
 };
 
+pub mod ahashfactmap;
+
 #[cfg(feature = "dashmap")]
 pub mod dashfactmap;
-
-pub mod hashfactmap;
 
 pub trait FactMap {
 	#[must_use]

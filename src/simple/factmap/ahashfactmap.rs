@@ -1,4 +1,4 @@
-use hashbrown::HashMap;
+use ahash::AHashMap;
 
 use crate::errors::NewFactError;
 use crate::fact::FactId;
@@ -6,16 +6,16 @@ use crate::simple::factmap::FactMap;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct HashFactMap {
+pub struct AHashFactMap {
 	lut: Vec<String>,
-	map: HashMap<String, FactId>,
+	map: AHashMap<String, FactId>,
 }
 
-impl FactMap for HashFactMap {
+impl FactMap for AHashFactMap {
 	fn new() -> Self {
 		Self {
 			lut: Vec::new(),
-			map: HashMap::new(),
+			map: AHashMap::new(),
 		}
 	}
 
@@ -28,16 +28,16 @@ impl FactMap for HashFactMap {
 	}
 }
 
-impl Default for HashFactMap {
+impl Default for AHashFactMap {
 	fn default() -> Self {
 		Self::new()
 	}
 }
 
-impl HashFactMap {
+impl AHashFactMap {
 	#[allow(dead_code)]
 	#[must_use]
-	pub fn get_map(&self) -> &HashMap<String, FactId> {
+	pub fn get_map(&self) -> &AHashMap<String, FactId> {
 		&self.map
 	}
 

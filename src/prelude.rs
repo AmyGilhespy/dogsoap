@@ -10,6 +10,9 @@ pub use crate::goal::Goal;
 #[allow(unused_imports)]
 pub use crate::planner::Planner;
 
+#[allow(unused_imports)]
+pub use crate::value::Value;
+
 #[cfg(feature = "simple")]
 #[allow(unused_imports)]
 pub use crate::simple::brain::Brain;
