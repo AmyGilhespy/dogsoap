@@ -44,10 +44,11 @@ impl Brain {
 	}
 
 	#[cfg(feature = "fasteval")]
-	pub fn update_thoughts<'a, F>(&mut self, fallback: Option<F>)
-	where
-		F: FnMut(&Self, &str, Vec<f64>) -> Option<f64> + 'a,
-	{
+	#[allow(clippy::type_complexity)]
+	pub fn update_thoughts(
+		&mut self,
+		fallback: Option<&mut dyn FnMut(&Self, &str, Vec<f64>) -> Option<f64>>,
+	) {
 		let mut fallback = fallback;
 		for (thought_name, expr) in &self.thought_updater {
 			let Some(thought_id) = self.thoughts.get_fact_id(thought_name) else {
